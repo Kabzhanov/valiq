@@ -50,46 +50,20 @@ def stage_multiplier(mrr_usd: float) -> tuple[float, str]:
     return 2.0, "mature"
 
 
-def _half_width_pct(completeness_pct: float) -> float:
-    """Continuous confidence-band half-width per spec.
-
-    half_width = min(60, 20 + (100 - completeness_pct) × 0.4)
-    100% → ±20%,  50% → ±40%,  0% → ±60%
-    """
-    return min(60.0, 20.0 + (100.0 - completeness_pct) * 0.4)
-
-
-def _confidence_label(completeness_pct: float) -> str:
-    if completeness_pct >= 80:
-        return "high"
-    if completeness_pct >= 50:
-        return "medium"
-    return "low"
-
-
 def compute_valuation(
     arr_usd: float,
     growth_mom_pct: float,
     total_score: float,
     mrr_usd: float,
-    completeness_pct: float = 100.0,
 ) -> Valuation:
-    """Compute USD valuation range from financials and ITAI Score.
-
-    The confidence band widens when completeness_pct is low:
-    - >=80% completeness → ±20% (high confidence)
-    - 50-80% → ±35% (medium confidence)
-    - <50% → ±50% (low confidence)
-    """
+    """Compute USD valuation range from financials and ITAI Score."""
     bm_point, bm_low, bm_high = base_multiple(growth_mom_pct)
     im = itai_multiplier(total_score)
     sm, stage = stage_multiplier(mrr_usd)
 
     point = arr_usd * bm_point * im * sm
-    hw = _half_width_pct(completeness_pct)
-    low = point * (1.0 - hw / 100.0)
-    high = point * (1.0 + hw / 100.0)
-    confidence = _confidence_label(completeness_pct)
+    low = point * 0.8
+    high = point * 1.2
 
     return Valuation(
         arr_usd=arr_usd,
@@ -102,6 +76,4 @@ def compute_valuation(
         high=high,
         display=f"{_fmt_usd(low)} – {_fmt_usd(high)}",
         stage=stage,
-        completeness_pct=completeness_pct,
-        confidence=confidence,
     )

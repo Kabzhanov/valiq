@@ -12,7 +12,7 @@ from valiq.config import (
     ValIQConfig, ProjectCfg, LLMCfg, AtiCfg, SubmitCfg,
 )
 from valiq.scorer import run_assessment
-from valiq.report.valuation import compute_valuation, _band_factors, _confidence_label
+from valiq.report.valuation import compute_valuation, _half_width_pct, _confidence_label
 
 
 # ──────────────────────────────────────────
@@ -216,36 +216,29 @@ def test_partial_data_medium_confidence():
 # Valuation confidence band widening
 # ──────────────────────────────────────────
 
-def test_band_factors_high():
-    lo, hi = _band_factors(100.0)
-    assert lo == pytest.approx(0.80)
-    assert hi == pytest.approx(1.20)
+def test_half_width_at_100pct():
+    """100% completeness → ±20%."""
+    assert _half_width_pct(100.0) == pytest.approx(20.0)
 
 
-def test_band_factors_medium():
-    lo, hi = _band_factors(65.0)
-    assert lo == pytest.approx(0.65)
-    assert hi == pytest.approx(1.35)
+def test_half_width_at_50pct():
+    """50% completeness → ±40%."""
+    assert _half_width_pct(50.0) == pytest.approx(40.0)
 
 
-def test_band_factors_low():
-    lo, hi = _band_factors(30.0)
-    assert lo == pytest.approx(0.50)
-    assert hi == pytest.approx(1.50)
+def test_half_width_at_0pct():
+    """0% completeness → capped at ±60%."""
+    assert _half_width_pct(0.0) == pytest.approx(60.0)
 
 
-def test_band_boundary_80():
-    lo_high, _ = _band_factors(80.0)
-    lo_med, _ = _band_factors(79.9)
-    assert lo_high == pytest.approx(0.80)
-    assert lo_med == pytest.approx(0.65)
+def test_half_width_capped_at_60():
+    """Formula never exceeds 60."""
+    assert _half_width_pct(-50.0) == pytest.approx(60.0)
 
 
-def test_band_boundary_50():
-    lo_med, _ = _band_factors(50.0)
-    lo_low, _ = _band_factors(49.9)
-    assert lo_med == pytest.approx(0.65)
-    assert lo_low == pytest.approx(0.50)
+def test_half_width_continuous_at_80pct():
+    """80% → 20 + 20*0.4 = 28."""
+    assert _half_width_pct(80.0) == pytest.approx(28.0)
 
 
 def test_confidence_label_values():
@@ -257,7 +250,8 @@ def test_confidence_label_values():
     assert _confidence_label(0.0) == "low"
 
 
-def test_valuation_high_completeness_20pct_band():
+def test_valuation_100pct_is_plus_minus_20():
+    """100% completeness → exact ±20% band (parity invariant)."""
     v = compute_valuation(arr_usd=120_000, growth_mom_pct=12,
                           total_score=786, mrr_usd=10_000, completeness_pct=100.0)
     assert v.low == pytest.approx(v.point_estimate * 0.80)
@@ -266,19 +260,21 @@ def test_valuation_high_completeness_20pct_band():
     assert v.completeness_pct == pytest.approx(100.0)
 
 
-def test_valuation_medium_completeness_35pct_band():
+def test_valuation_50pct_is_plus_minus_40():
+    """50% completeness → ±40% band."""
     v = compute_valuation(arr_usd=120_000, growth_mom_pct=12,
-                          total_score=786, mrr_usd=10_000, completeness_pct=65.0)
-    assert v.low == pytest.approx(v.point_estimate * 0.65)
-    assert v.high == pytest.approx(v.point_estimate * 1.35)
+                          total_score=786, mrr_usd=10_000, completeness_pct=50.0)
+    assert v.low == pytest.approx(v.point_estimate * 0.60)
+    assert v.high == pytest.approx(v.point_estimate * 1.40)
     assert v.confidence == "medium"
 
 
-def test_valuation_low_completeness_50pct_band():
+def test_valuation_0pct_is_plus_minus_60():
+    """0% completeness → ±60% band."""
     v = compute_valuation(arr_usd=120_000, growth_mom_pct=12,
-                          total_score=786, mrr_usd=10_000, completeness_pct=20.0)
-    assert v.low == pytest.approx(v.point_estimate * 0.50)
-    assert v.high == pytest.approx(v.point_estimate * 1.50)
+                          total_score=786, mrr_usd=10_000, completeness_pct=0.0)
+    assert v.low == pytest.approx(v.point_estimate * 0.40)
+    assert v.high == pytest.approx(v.point_estimate * 1.60)
     assert v.confidence == "low"
 
 
