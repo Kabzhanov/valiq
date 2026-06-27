@@ -50,20 +50,51 @@ def stage_multiplier(mrr_usd: float) -> tuple[float, str]:
     return 2.0, "mature"
 
 
+def _band_factors(completeness_pct: float) -> tuple[float, float]:
+    """Return (low_factor, high_factor) based on data completeness.
+
+    high (>=80%): ±20%   → 0.80 / 1.20
+    medium (>=50%): ±35% → 0.65 / 1.35
+    low (<50%): ±50%     → 0.50 / 1.50
+    """
+    if completeness_pct >= 80:
+        return 0.80, 1.20
+    if completeness_pct >= 50:
+        return 0.65, 1.35
+    return 0.50, 1.50
+
+
+def _confidence_label(completeness_pct: float) -> str:
+    if completeness_pct >= 80:
+        return "high"
+    if completeness_pct >= 50:
+        return "medium"
+    return "low"
+
+
 def compute_valuation(
     arr_usd: float,
     growth_mom_pct: float,
     total_score: float,
     mrr_usd: float,
+    completeness_pct: float = 100.0,
 ) -> Valuation:
-    """Compute USD valuation range from financials and ITAI Score."""
+    """Compute USD valuation range from financials and ITAI Score.
+
+    The confidence band widens when completeness_pct is low:
+    - >=80% completeness → ±20% (high confidence)
+    - 50-80% → ±35% (medium confidence)
+    - <50% → ±50% (low confidence)
+    """
     bm_point, bm_low, bm_high = base_multiple(growth_mom_pct)
     im = itai_multiplier(total_score)
     sm, stage = stage_multiplier(mrr_usd)
 
     point = arr_usd * bm_point * im * sm
-    low = point * 0.8
-    high = point * 1.2
+    low_factor, high_factor = _band_factors(completeness_pct)
+    low = point * low_factor
+    high = point * high_factor
+    confidence = _confidence_label(completeness_pct)
 
     return Valuation(
         arr_usd=arr_usd,
@@ -76,4 +107,6 @@ def compute_valuation(
         high=high,
         display=f"{_fmt_usd(low)} – {_fmt_usd(high)}",
         stage=stage,
+        completeness_pct=completeness_pct,
+        confidence=confidence,
     )

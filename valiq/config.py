@@ -19,34 +19,34 @@ class ProjectCfg:
 class FinancialCfg:
     provider: str = "manual"
     api_key_env: str = ""
-    mrr: float = 0.0
-    arr: float = 0.0
-    growth_mom_pct: float = 0.0
-    churn_pct: float = 0.0
-    arpu: float = 0.0
-    gross_margin_pct: float = 0.0
-    burn_runway_months: float = 0.0
+    mrr: Optional[float] = None
+    arr: Optional[float] = None
+    growth_mom_pct: Optional[float] = None
+    churn_pct: Optional[float] = None
+    arpu: Optional[float] = None
+    gross_margin_pct: Optional[float] = None
+    burn_runway_months: Optional[float] = None
 
 
 @dataclass
 class DataCfg:
-    data_volume_tb: float = 0.0
-    history_depth_years: float = 0.0
-    data_rights: float = 5.0       # 0-10
-    reproducibility: float = 5.0   # 0-10 (10=hardest to copy)
-    training_datasets: bool = False
-    knowledge_graph: bool = False
+    data_volume_tb: Optional[float] = None
+    history_depth_years: Optional[float] = None
+    data_rights: Optional[float] = None       # 0-10
+    reproducibility: Optional[float] = None   # 0-10 (10=hardest to copy)
+    training_datasets: Optional[bool] = None
+    knowledge_graph: Optional[bool] = None
 
 
 @dataclass
 class ProductCfg:
-    stage: str = "mvp"             # idea|mvp|beta|prod|scale|enterprise
-    automation_depth_pct: float = 0.0
-    integrations_count: int = 0
-    has_docs: bool = False
-    has_roadmap: bool = False
-    ux_nps: float = 0.0
-    active_modules: int = 0
+    stage: Optional[str] = None               # idea|mvp|beta|prod|scale|enterprise
+    automation_depth_pct: Optional[float] = None
+    integrations_count: Optional[int] = None
+    has_docs: Optional[bool] = None
+    has_roadmap: Optional[bool] = None
+    ux_nps: Optional[float] = None
+    active_modules: Optional[int] = None
 
 
 @dataclass
@@ -54,60 +54,60 @@ class TechCfg:
     provider: str = "manual"
     repo: str = ""
     token_env: str = ""
-    test_coverage_pct: float = 0.0
-    tech_debt_score: float = 5.0   # 0-10 (10=no debt)
-    mttr_hours: float = 24.0
-    time_to_deploy_hours: float = 4.0
-    architecture_score: float = 5.0  # 0-10 (LLM judge)
-    uptime_pct: float = 99.0
-    code_docs_pct: float = 50.0
+    test_coverage_pct: Optional[float] = None
+    tech_debt_score: Optional[float] = None   # 0-10 (10=no debt)
+    mttr_hours: Optional[float] = None
+    time_to_deploy_hours: Optional[float] = None
+    architecture_score: Optional[float] = None  # 0-10 (LLM judge)
+    uptime_pct: Optional[float] = None
+    code_docs_pct: Optional[float] = None
 
 
 @dataclass
 class ClientsCfg:
     provider: str = "manual"
     api_key_env: str = ""
-    active_clients: int = 0
-    ltv_cac_ratio: float = 0.0
-    nps: float = 0.0
-    client_churn_pct: float = 0.0
-    top_client_revenue_pct: float = 100.0
-    enterprise_contracts: int = 0
+    active_clients: Optional[int] = None
+    ltv_cac_ratio: Optional[float] = None
+    nps: Optional[float] = None
+    client_churn_pct: Optional[float] = None
+    top_client_revenue_pct: Optional[float] = None
+    enterprise_contracts: Optional[int] = None
 
 
 @dataclass
 class ComplianceCfg:
-    g12_scan_passed: bool = False
-    kz_law_checklist_pct: float = 0.0  # 0-100
-    has_privacy_policy: bool = False
-    pentest_done: bool = False
+    g12_scan_passed: Optional[bool] = None
+    kz_law_checklist_pct: Optional[float] = None  # 0-100
+    has_privacy_policy: Optional[bool] = None
+    pentest_done: Optional[bool] = None
     # ati_score is fetched dynamically via connectors/ati.py
     ati_score_manual: Optional[float] = None  # fallback if no live ATI
 
 
 @dataclass
 class MarketCfg:
-    tam_usd_bn: float = 0.0
-    som_arr_ratio: float = 0.0     # SOM/ARR
-    moat_score: float = 5.0        # 0-10 (LLM judge)
-    entry_barriers: float = 5.0    # 0-10
-    market_growth_pct: float = 0.0
+    tam_usd_bn: Optional[float] = None
+    som_arr_ratio: Optional[float] = None     # SOM/ARR
+    moat_score: Optional[float] = None        # 0-10 (LLM judge)
+    entry_barriers: Optional[float] = None    # 0-10
+    market_growth_pct: Optional[float] = None
 
 
 @dataclass
 class TeamCfg:
-    bus_factor: int = 1
-    dev_processes_score: float = 5.0  # 0-10
-    key_developers: int = 0
-    ceo_dependency: bool = True
+    bus_factor: Optional[int] = None
+    dev_processes_score: Optional[float] = None  # 0-10
+    key_developers: Optional[int] = None
+    ceo_dependency: Optional[bool] = None
 
 
 @dataclass
 class IpCfg:
-    brand_registered: bool = False
-    patents_count: int = 0
-    proprietary_algorithms: bool = False
-    code_copyright: bool = False
+    brand_registered: Optional[bool] = None
+    patents_count: Optional[int] = None
+    proprietary_algorithms: Optional[bool] = None
+    code_copyright: Optional[bool] = None
 
 
 @dataclass

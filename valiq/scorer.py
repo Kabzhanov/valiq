@@ -15,6 +15,23 @@ from valiq.blocks.b9_ip import score_b9
 from valiq.connectors.ati import get_ati_score
 
 
+def _completeness(blocks: list[BlockResult]) -> tuple[float, str]:
+    """Compute completeness % and confidence label across all scored blocks."""
+    all_metrics = [m for b in blocks for m in b.metrics]
+    total = len(all_metrics)
+    if total == 0:
+        return 100.0, "high"
+    present = sum(1 for m in all_metrics if m.present)
+    pct = present / total * 100.0
+    if pct >= 80:
+        confidence = "high"
+    elif pct >= 50:
+        confidence = "medium"
+    else:
+        confidence = "low"
+    return pct, confidence
+
+
 def run_assessment(cfg: ValIQConfig, only: str | None = None) -> Assessment:
     """
     Run all block scorers and return an Assessment.
@@ -50,30 +67,37 @@ def run_assessment(cfg: ValIQConfig, only: str | None = None) -> Assessment:
             blocks.append(b6)
         except ATIRequiredError:
             ati_status = "ati_required"
-            # Create a zero-scored B6 placeholder
+            # Create a zero-scored B6 placeholder (all metrics marked absent)
             from valiq.models import MetricResult
             placeholder_metrics = [
                 MetricResult(id="B6_ATI", block="B6", name="AI Trust Index", weight=40,
                              score=0.0, source="ati",
-                             rationale="ATI score required — visit bizdnai.com/index/"),
+                             rationale="ATI score required — visit bizdnai.com/index/",
+                             present=False),
                 MetricResult(id="B6_G12_Scan", block="B6", name="G12 Scan", weight=20,
-                             score=0.0, source="ati", rationale="Pending ATI"),
+                             score=0.0, source="ati", rationale="Pending ATI",
+                             present=False),
                 MetricResult(id="B6_KZ_Law_230", block="B6", name="KZ Law 230-VIII", weight=15,
-                             score=0.0, source="manual", rationale="Pending ATI"),
+                             score=0.0, source="manual", rationale="Pending ATI",
+                             present=False),
                 MetricResult(id="B6_Privacy_Policy", block="B6", name="Privacy Policy", weight=10,
-                             score=0.0, source="manual", rationale="Pending ATI"),
+                             score=0.0, source="manual", rationale="Pending ATI",
+                             present=False),
                 MetricResult(id="B6_Pentest", block="B6", name="Security Audit", weight=15,
-                             score=0.0, source="manual", rationale="Pending ATI"),
+                             score=0.0, source="manual", rationale="Pending ATI",
+                             present=False),
             ]
             blocks.append(BlockResult(
                 code="B6", name="Trust & Compliance (BLOCKED)", weight=100,
-                metrics=placeholder_metrics, block_score=0.0, active=False
+                metrics=placeholder_metrics, block_score=0.0, active=False,
+                no_data=True,
             ))
 
     # Sort blocks by code
     blocks.sort(key=lambda b: b.code)
 
     total_score = sum(b.block_score for b in blocks)
+    completeness_pct, confidence = _completeness(blocks)
 
     return Assessment(
         project_name=cfg.project.name,
@@ -82,4 +106,6 @@ def run_assessment(cfg: ValIQConfig, only: str | None = None) -> Assessment:
         ati_status=ati_status,
         ati_score=ati_score,
         partial=(ati_status == "ati_required"),
+        completeness_pct=completeness_pct,
+        confidence=confidence,
     )

@@ -28,10 +28,11 @@ def _maybe_valuation(cfg, assessment):
     if assessment.ati_status == "ati_required":
         return None
     return compute_valuation(
-        arr_usd=cfg.financial.arr,
-        growth_mom_pct=cfg.financial.growth_mom_pct,
+        arr_usd=cfg.financial.arr or 0.0,
+        growth_mom_pct=cfg.financial.growth_mom_pct or 0.0,
         total_score=assessment.total_score,
-        mrr_usd=cfg.financial.mrr,
+        mrr_usd=cfg.financial.mrr or 0.0,
+        completeness_pct=assessment.completeness_pct,
     )
 
 

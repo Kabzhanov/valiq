@@ -3,6 +3,7 @@
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import FinancialCfg
+from valiq.blocks import rescale_block_score
 
 
 def _clamp(v: float) -> float:
@@ -79,30 +80,35 @@ def score_burn_runway(months: float) -> float:
     return 10.0
 
 
+def _m(id: str, name: str, weight: int, raw, score_fn, source: str, rationale_fn) -> MetricResult:
+    """Build a MetricResult; marks absent (present=False) when raw is None."""
+    if raw is None:
+        return MetricResult(id=id, block="B1", name=name, weight=weight,
+                            raw_value=None, score=0.0, source=source,
+                            rationale="no data", present=False)
+    return MetricResult(id=id, block="B1", name=name, weight=weight,
+                        raw_value=float(raw), score=score_fn(raw), source=source,
+                        rationale=rationale_fn(raw), present=True)
+
+
 def score_b1(cfg: FinancialCfg) -> BlockResult:
+    src = cfg.provider
     metrics = [
-        MetricResult(id="B1_MRR", block="B1", name="MRR", weight=40,
-                     raw_value=cfg.mrr, score=score_mrr(cfg.mrr), source=cfg.provider,
-                     rationale=f"MRR=${cfg.mrr:,.0f}/mo"),
-        MetricResult(id="B1_ARR", block="B1", name="ARR", weight=35,
-                     raw_value=cfg.arr, score=score_arr(cfg.arr), source=cfg.provider,
-                     rationale=f"ARR=${cfg.arr:,.0f}/yr"),
-        MetricResult(id="B1_Growth_MoM", block="B1", name="Growth MoM", weight=35,
-                     raw_value=cfg.growth_mom_pct, score=score_growth(cfg.growth_mom_pct),
-                     source=cfg.provider, rationale=f"MoM growth={cfg.growth_mom_pct}%"),
-        MetricResult(id="B1_Churn", block="B1", name="Churn Rate", weight=30,
-                     raw_value=cfg.churn_pct, score=score_churn(cfg.churn_pct),
-                     source=cfg.provider, rationale=f"Churn={cfg.churn_pct}%/mo"),
-        MetricResult(id="B1_ARPU", block="B1", name="ARPU", weight=25,
-                     raw_value=cfg.arpu, score=score_arpu(cfg.arpu), source=cfg.provider,
-                     rationale=f"ARPU=${cfg.arpu:,.0f}"),
-        MetricResult(id="B1_Gross_Margin", block="B1", name="Gross Margin", weight=30,
-                     raw_value=cfg.gross_margin_pct, score=score_gross_margin(cfg.gross_margin_pct),
-                     source=cfg.provider, rationale=f"Gross margin={cfg.gross_margin_pct}%"),
-        MetricResult(id="B1_Burn_Runway", block="B1", name="Burn Rate/Runway", weight=25,
-                     raw_value=cfg.burn_runway_months, score=score_burn_runway(cfg.burn_runway_months),
-                     source=cfg.provider, rationale=f"Runway={cfg.burn_runway_months} months"),
+        _m("B1_MRR", "MRR", 40, cfg.mrr, score_mrr, src,
+           lambda v: f"MRR=${v:,.0f}/mo"),
+        _m("B1_ARR", "ARR", 35, cfg.arr, score_arr, src,
+           lambda v: f"ARR=${v:,.0f}/yr"),
+        _m("B1_Growth_MoM", "Growth MoM", 35, cfg.growth_mom_pct, score_growth, src,
+           lambda v: f"MoM growth={v}%"),
+        _m("B1_Churn", "Churn Rate", 30, cfg.churn_pct, score_churn, src,
+           lambda v: f"Churn={v}%/mo"),
+        _m("B1_ARPU", "ARPU", 25, cfg.arpu, score_arpu, src,
+           lambda v: f"ARPU=${v:,.0f}"),
+        _m("B1_Gross_Margin", "Gross Margin", 30, cfg.gross_margin_pct, score_gross_margin, src,
+           lambda v: f"Gross margin={v}%"),
+        _m("B1_Burn_Runway", "Burn Rate/Runway", 25, cfg.burn_runway_months, score_burn_runway, src,
+           lambda v: f"Runway={v} months"),
     ]
-    block_score = sum(m.score * m.weight for m in metrics) / 10.0
     return BlockResult(code="B1", name="Financial Value", weight=220,
-                       metrics=metrics, block_score=block_score)
+                       metrics=metrics, block_score=rescale_block_score(metrics, 220),
+                       no_data=not any(m.present for m in metrics))
