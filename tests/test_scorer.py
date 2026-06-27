@@ -79,9 +79,9 @@ def test_metric_weights_match_appendix_a():
 
 
 def test_total_metric_count():
-    # The enumerated weight model (Appendix A) defines 51 weighted metrics
-    # summing to 1000 points across 9 blocks. ("54" is the spec's headline figure;
-    # the authoritative weight table lists 51.)
+    # Canonical metric count = 51 weighted metrics (Appendix A), summing to
+    # 1000 points across 9 blocks. (Confirmed with Rashid 2026-06-27: the "54"
+    # headline was dropped in favour of the authoritative 51-metric table.)
     count = sum(len(b.metrics) for b in _all_blocks())
     assert count == 51
 

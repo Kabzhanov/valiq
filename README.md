@@ -1,7 +1,7 @@
 # ValIQ — IT/AI Product Index (ITAI Score)
 
 > Open-source, client-side CLI that scores the **market value & maturity** of an IT/AI product
-> on a **0–1000** scale across **9 blocks / 54 metrics**, then converts the score into a
+> on a **0–1000** scale across **9 blocks / 51 metrics**, then converts the score into a
 > **USD valuation range**.
 
 ValIQ answers **"how much is this product worth, and why?"** — the valuation companion to the
@@ -13,7 +13,7 @@ raising investment and winning enterprise clients.
 |---|---|---|
 | Question | "Can I trust this product?" | "How much is it worth?" |
 | Scale | 0–10 | 0–1000 → **USD range** |
-| Units | 12 directions (G1–G12) | 9 blocks × 54 metrics |
+| Units | 12 directions (G1–G12) | 9 blocks × 51 metrics |
 | Result | trust score + green shield | maturity score + **valuation range** |
 | Badge | `bizdnai.com/index/` | `bizdnai.com/valiq/` |
 
@@ -97,7 +97,7 @@ valiq submit -c examples/valiq.yaml --registry https://bizdnai.com/api/valiq/sub
 | B9 | Intellectual Property | 30 | patents, brand, registries |
 
 Each metric is normalised to 0–10, multiplied by its weight, and summed; the block total is
-`Σ(score × weight) / 10`. The 54-metric breakdown lives in `valiq/blocks/`.
+`Σ(score × weight) / 10`. The 51-metric breakdown lives in `valiq/blocks/`.
 
 ## The ATI gate (hard invariant)
 
