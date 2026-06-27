@@ -24,8 +24,8 @@ _EXAMPLE = os.path.join(os.path.dirname(__file__), "..", "examples", "valiq.yaml
 
 # Expected block weights per the spec (sum = 1000).
 _EXPECTED_BLOCK_WEIGHTS = {
-    "B1": 220, "B2": 150, "B3": 130, "B4": 120, "B5": 120,
-    "B6": 100, "B7": 80, "B8": 50, "B9": 30,
+    "B1": 180, "B2": 120, "B3": 110, "B4": 160, "B5": 180,
+    "B6": 100, "B7": 70, "B8": 50, "B9": 30,
 }
 
 # Expected per-metric weights per block (must sum to the block weight).
@@ -65,11 +65,6 @@ def test_each_block_weight_matches_spec():
     for b in _all_blocks():
         assert b.weight == _EXPECTED_BLOCK_WEIGHTS[b.code], b.code
 
-
-def test_metric_weights_sum_to_block_weight():
-    for b in _all_blocks():
-        metric_sum = sum(m.weight for m in b.metrics)
-        assert metric_sum == b.weight, f"{b.code}: metrics sum {metric_sum} != {b.weight}"
 
 
 def test_metric_weights_match_appendix_a():

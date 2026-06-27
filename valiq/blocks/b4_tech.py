@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B4 Technology — 120 points."""
+"""B4 Technology — 160 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import TechCfg
@@ -102,6 +102,6 @@ def score_b4(cfg: TechCfg) -> BlockResult:
                                     raw_value=cdoc, score=_clamp(cdoc / 10.0), source=src,
                                     rationale=f"Code docs={cdoc}%", present=True))
 
-    return BlockResult(code="B4", name="Technology", weight=120,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 120),
+    return BlockResult(code="B4", name="Technology", weight=160,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 160),
                        no_data=not any(m.present for m in metrics))

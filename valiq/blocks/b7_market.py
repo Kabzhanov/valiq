@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B7 Market & Competition — 80 points."""
+"""B7 Market & Competition — 70 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import MarketCfg
@@ -77,6 +77,6 @@ def score_b7(cfg: MarketCfg) -> BlockResult:
                                     raw_value=mg, score=mg_s, source="manual",
                                     rationale=f"Market growth={mg}%/yr", present=True))
 
-    return BlockResult(code="B7", name="Market & Competition", weight=80,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 80),
+    return BlockResult(code="B7", name="Market & Competition", weight=70,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 70),
                        no_data=not any(m.present for m in metrics))

@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B5 Client Base — 120 points."""
+"""B5 Client Base — 180 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import ClientsCfg
@@ -105,6 +105,6 @@ def score_b5(cfg: ClientsCfg) -> BlockResult:
                                     raw_value=float(ec), score=ec_s, source=src,
                                     rationale=f"Enterprise/govt contracts={ec}", present=True))
 
-    return BlockResult(code="B5", name="Client Base", weight=120,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 120),
+    return BlockResult(code="B5", name="Client Base", weight=180,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 180),
                        no_data=not any(m.present for m in metrics))

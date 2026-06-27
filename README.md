@@ -76,10 +76,10 @@ valiq run --self -c examples/valiq.yaml --out report.html
 valiq estimate -c examples/valiq.yaml
 ```
 
-**Example output** (ITAI score 696 / 1000):
+**Example output** (ITAI score 690 / 1000):
 
 ```
-ITAI Score : 696 / 1000
+ITAI Score : 690 / 1000
 Stage       : Series-A candidate
 Valuation   : $672K – $1.01M  (±20% range)
 ATI status  : verified (score 7.4)
@@ -109,13 +109,13 @@ valiq submit -c examples/valiq.yaml --registry https://bizdnai.com/api/valiq/sub
 
 | # | Block | Weight | Primary sources |
 |---|-------|-------:|-----------------|
-| B1 | Financial Value | 220 | payment APIs, P&L, bank statements |
-| B2 | Data & Data Moat | 150 | DB schema, data volume, rights, LLM |
-| B3 | Product & Maturity | 130 | YAML, GitHub Projects, docs, NPS |
-| B4 | Technology | 120 | GitHub/GitLab CI, SonarQube, Prometheus |
-| B5 | Client Base | 120 | CRM (amoCRM / Bitrix24), surveys |
+| B1 | Financial Value | 180 | payment APIs, P&L, bank statements |
+| B2 | Data & Data Moat | 120 | DB schema, data volume, rights, LLM |
+| B3 | Product & Maturity | 110 | YAML, GitHub Projects, docs, NPS |
+| B4 | Technology | 160 | GitHub/GitLab CI, SonarQube, Prometheus |
+| B5 | Client Base | 180 | CRM (amoCRM / Bitrix24), surveys |
 | B6 | **Trust & Compliance** | 100 | **ATI API, G12 scan, KZ checklist** |
-| B7 | Market & Competition | 80 | YAML, TAM/SAM/SOM, LLM |
+| B7 | Market & Competition | 70 | YAML, TAM/SAM/SOM, LLM |
 | B8 | Team | 50 | LinkedIn, GitHub, YAML |
 | B9 | Intellectual Property | 30 | patents, brand, registries |
 | | **Total** | **1000** | |

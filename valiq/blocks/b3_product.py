@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B3 Product & Maturity — 130 points."""
+"""B3 Product & Maturity — 110 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import ProductCfg
@@ -103,6 +103,6 @@ def score_b3(cfg: ProductCfg) -> BlockResult:
                                     raw_value=float(mods), score=mod_s, source="manual",
                                     rationale=f"Active modules in prod={mods}", present=True))
 
-    return BlockResult(code="B3", name="Product & Maturity", weight=130,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 130),
+    return BlockResult(code="B3", name="Product & Maturity", weight=110,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 110),
                        no_data=not any(m.present for m in metrics))

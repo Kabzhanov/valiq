@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B2 Data & Data Moat — 150 points."""
+"""B2 Data & Data Moat — 120 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import DataCfg
@@ -85,6 +85,6 @@ def score_b2(cfg: DataCfg) -> BlockResult:
                                     rationale="Has knowledge graph / data moat" if kg else "No knowledge graph",
                                     present=True))
 
-    return BlockResult(code="B2", name="Data & Data Moat", weight=150,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 150),
+    return BlockResult(code="B2", name="Data & Data Moat", weight=120,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 120),
                        no_data=not any(m.present for m in metrics))

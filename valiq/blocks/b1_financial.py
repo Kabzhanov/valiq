@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Apache-2.0
-"""B1 Financial Value — 220 points."""
+"""B1 Financial Value — 180 points."""
 from __future__ import annotations
 from valiq.models import MetricResult, BlockResult
 from valiq.config import FinancialCfg
@@ -109,6 +109,6 @@ def score_b1(cfg: FinancialCfg) -> BlockResult:
         _m("B1_Burn_Runway", "Burn Rate/Runway", 25, cfg.burn_runway_months, score_burn_runway, src,
            lambda v: f"Runway={v} months"),
     ]
-    return BlockResult(code="B1", name="Financial Value", weight=220,
-                       metrics=metrics, block_score=rescale_block_score(metrics, 220),
+    return BlockResult(code="B1", name="Financial Value", weight=180,
+                       metrics=metrics, block_score=rescale_block_score(metrics, 180),
                        no_data=not any(m.present for m in metrics))
