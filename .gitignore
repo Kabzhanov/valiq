@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+*.log
+valiq_report_*.html
+valiq_report_*.json
+.ruff_cache/
+.pytest_cache/

@@ -1,0 +1,93 @@
+# ValIQ configuration — all metrics manual (no live connectors needed for valiq run --self)
+# Run: valiq run --self -c examples/valiq.yaml
+
+project:
+  name: "BizDNAi Platform"
+  type: "saas"
+  has_ai: true
+  country: "KZ"
+  site_url: "https://bizdnai.com"
+
+financial:
+  provider: "manual"
+  mrr: 10000          # $10K MRR
+  arr: 120000         # $120K ARR
+  growth_mom_pct: 12  # 12% MoM growth
+  churn_pct: 2.5      # 2.5% monthly churn
+  arpu: 250           # $250 ARPU
+  gross_margin_pct: 72  # 72% gross margin
+  burn_runway_months: 14  # 14 months runway
+
+data:
+  data_volume_tb: 2.0        # 2TB
+  history_depth_years: 3.0   # 3 years of data
+  data_rights: 8.0           # 0-10
+  reproducibility: 7.0       # 0-10 (hard to copy)
+  training_datasets: true    # has proprietary training data
+  knowledge_graph: true      # has knowledge graph
+
+product:
+  stage: "prod"
+  automation_depth_pct: 70   # automates 70% of client processes
+  integrations_count: 8      # 8 native integrations
+  has_docs: true
+  has_roadmap: true
+  ux_nps: 55                 # NPS=55
+  active_modules: 7          # 7 active modules
+
+tech:
+  provider: "manual"
+  test_coverage_pct: 72      # 72% test coverage
+  tech_debt_score: 6.5       # 0-10 (10=no debt)
+  mttr_hours: 4.0            # 4h mean time to repair
+  time_to_deploy_hours: 1.5  # 1.5h to deploy
+  architecture_score: 7.5    # 0-10 (microservices, K8s-ready)
+  uptime_pct: 99.7           # 99.7% uptime
+  code_docs_pct: 65          # 65% functions documented
+
+clients:
+  provider: "manual"
+  active_clients: 25
+  ltv_cac_ratio: 4.5        # LTV/CAC=4.5
+  nps: 55
+  client_churn_pct: 3.0     # 3% monthly
+  top_client_revenue_pct: 18  # top client = 18% of revenue
+  enterprise_contracts: 2
+
+compliance:
+  g12_scan_passed: true
+  kz_law_checklist_pct: 80  # 80% of KZ law 230-VIII checklist complete
+  has_privacy_policy: true
+  pentest_done: true
+
+market:
+  tam_usd_bn: 5.0    # $5B TAM
+  som_arr_ratio: 50  # SOM is 50x ARR
+  moat_score: 7.0    # 0-10
+  entry_barriers: 6.5
+  market_growth_pct: 25  # 25% annual market growth
+
+team:
+  bus_factor: 3
+  dev_processes_score: 7.5  # 0-10
+  key_developers: 2
+  ceo_dependency: false     # product runs without CEO
+
+ip:
+  brand_registered: true
+  patents_count: 0
+  proprietary_algorithms: true
+  code_copyright: true
+
+llm:
+  provider: ""         # set to "openai" or "anthropic" for LLM judge
+  model: ""
+  api_key_env: ""
+
+ati:
+  source: "manual"     # "cabinet" to fetch live, "manual" to use score below
+  score: 7.9           # ATI score 0-10 (required for Block 6)
+  site_url: "https://bizdnai.com"
+
+submit:
+  registry_url: ""     # optional: POST scores to registry
